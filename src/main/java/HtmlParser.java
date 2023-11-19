@@ -8,6 +8,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.HashSet;
 
 public class HtmlParser {
 
@@ -33,7 +34,9 @@ public class HtmlParser {
 
             for (Element link : links) {
                 String linkAttribute = link.attr("abs:href");
-                Files.writeString(FILE_PATH, linkAttribute + "\n", StandardCharsets.UTF_8, StandardOpenOption.APPEND);
+                HashSet<String> linksElement = new HashSet<>();
+                linksElement.add(linkAttribute);
+                Files.writeString(FILE_PATH, linksElement + "\n", StandardCharsets.UTF_8, StandardOpenOption.APPEND);
             }
         } catch (IOException e) {
             throw new URLRequestException("Incorrect URL request, or the connection time is out", e);
