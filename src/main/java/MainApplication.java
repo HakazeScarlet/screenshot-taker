@@ -1,4 +1,6 @@
-public class Main {
+import parser.HtmlParser;
+
+public class MainApplication {
 
     public static void main(String[] args) {
         HtmlParser htmlParser = new HtmlParser();
