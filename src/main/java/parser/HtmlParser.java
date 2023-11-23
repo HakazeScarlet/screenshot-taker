@@ -16,21 +16,19 @@ import java.util.Set;
 
 public class HtmlParser {
 
-    private static final Path FILE_PATH = Path.of(System.getProperty("user.dir") + "/" + "links.txt");
-    private static final Path INVALID_FILE_PATH = Path.of(System.getProperty("user.dir") + "/" + "invalid_links.txt");
-    private final String[] schemes = {"http", "https"};
+    private static final Path INVALID_LINKS = Path.of(System.getProperty("user.dir") + "/" + "invalid_links.txt");
+    private static final String[] SCHEMES = {"http", "https"};
+
+    private final UrlValidator urlValidator;
 
     public HtmlParser() {
+        this.urlValidator = new UrlValidator(SCHEMES);
         try {
-            if (!Files.exists(FILE_PATH)) {
-                Files.createFile(FILE_PATH);
-            } else if (!Files.exists(INVALID_FILE_PATH)) {
-                Files.createFile(INVALID_FILE_PATH);
+            if (!Files.exists(INVALID_LINKS)) {
+                Files.createFile(INVALID_LINKS);
             } else {
-                Files.delete(FILE_PATH);
-                Files.createFile(FILE_PATH);
-                Files.delete(INVALID_FILE_PATH);
-                Files.createFile(INVALID_FILE_PATH);
+                Files.delete(INVALID_LINKS);
+                Files.createFile(INVALID_LINKS);
             }
         } catch (IOException e) {
             throw new FileCreatingException("Unable to create new file", e);
@@ -41,7 +39,6 @@ public class HtmlParser {
         try {
             Document document = Jsoup.connect(url).get();
             Elements links = document.select("a");
-            UrlValidator urlValidator = new UrlValidator(schemes);
             Set<String> linksElement = new HashSet<>();
 
             for (Element link : links) {
@@ -49,11 +46,11 @@ public class HtmlParser {
 
                 if (urlValidator.isValid(linkAttribute)) {
                     linksElement.add(linkAttribute);
-                    Files.writeString(FILE_PATH, linksElement + "\n", StandardCharsets.UTF_8, StandardOpenOption.APPEND);
                 } else {
-                    Files.writeString(INVALID_FILE_PATH, linksElement + "\n", StandardCharsets.UTF_8, StandardOpenOption.APPEND);
+                    Files.writeString(INVALID_LINKS, linkAttribute + "\n", StandardCharsets.UTF_8, StandardOpenOption.APPEND);
                 }
             }
+            System.out.println();
         } catch (IOException e) {
             throw new URLRequestException("Incorrect URL request, or the connection time is out", e);
         }

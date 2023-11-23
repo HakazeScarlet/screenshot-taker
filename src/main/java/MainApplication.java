@@ -4,6 +4,7 @@ public class MainApplication {
 
     public static void main(String[] args) {
         HtmlParser htmlParser = new HtmlParser();
-        htmlParser.parse("https://github.com/");
+//        htmlParser.parse("https://github.com/");
+        htmlParser.parse("https://airsoft-rus.ru/");
     }
 }
