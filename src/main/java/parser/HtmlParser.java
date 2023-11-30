@@ -7,10 +7,8 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -20,6 +18,7 @@ public class HtmlParser {
     private static final Path INVALID_LINKS = Path.of(System.getProperty("user.dir") + "/" + "invalid_links.txt");
     private static final Pattern QUERY_PARAMETER_PATTERN = Pattern.compile("\\?(.*)");
     private static final Pattern MEDIA_PATTERN = Pattern.compile("\\.(gif|mp4|mp3|js|jpeg|jpg|pdf|png|bmp|webp|svgz)$");
+    private static final int RECURSION_STEP = 1;
 
     private final UrlValidator urlValidator;
 
@@ -37,25 +36,38 @@ public class HtmlParser {
         }
     }
 
-    public Set<String> parse(String url) {
-        try {
-            Document document = Jsoup.connect(url).get();
-            Elements links = document.select("a");
-            Set<String> linksElement = new HashSet<>();
-
-            for (Element link : links) {
-                String linkAttribute = link.attr("abs:href");
-                if (hasValidProtocol(linkAttribute) && !hasQueryParameters(linkAttribute) && !isMedia(linkAttribute)) {
-                    linksElement.add(linkAttribute);
-                } else {
-                    Files.writeString(INVALID_LINKS, linkAttribute + "\n", StandardCharsets.UTF_8, StandardOpenOption.APPEND);
-                }
-            }
-
-            return linksElement;
-        } catch (IOException e) {
-            throw new URLRequestException("Incorrect URL request, or the connection time is out", e);
+    public Set<String> parse1(Set<String> links, int searchDeep, Set<String> visitedLinks) {
+        if (searchDeep == 0) {
+            return links;
         }
+
+        for (String link : links) {
+            Document document = Jsoup.connect(link).get();
+            Elements elements = document.select("a");
+
+            Set<String> parsedLinks = parseLinks(elements);
+            visitedLinks.addAll(parsedLinks);
+            Set<String> result = parse1(parsedLinks, searchDeep - RECURSION_STEP, visitedLinks);
+        }
+
+//        try {
+//
+//            return parse(url, searchDeep - RECURSION_STEP);
+//
+//        } catch (IOException e) {
+//            throw new URLRequestException("Incorrect URL request, or the connection time is out", e);
+//        }
+    }
+
+    private Set<String> parseLinks(Elements elements) {
+        Set<String> links = new HashSet<>();
+        for (Element element : elements) {
+            String link = element.attr("abs:href");
+            if (hasValidProtocol(link) && !hasQueryParameters(link) && !isMedia(link)) {
+                links.add(link);
+            }
+        }
+        return links;
     }
 
     private boolean hasValidProtocol(String linkAttribute) {
