@@ -37,25 +37,25 @@ public class HtmlParser {
     }
 
     // TODO: add logging and log the parsing process
-    public Set<String> parse(Set<String> links, int searchDeep, Set<String> visitedLinks) {
+    public Set<String> parse(Set<String> currentLinks, int searchDeep, Set<String> resultedLinks) {
         try {
             if (searchDeep == 0) {
-                return visitedLinks;
+                return resultedLinks;
             }
 
             Set<String> parsedLinks = new HashSet<>();
-            for (String link : links) {
+            for (String link : currentLinks) {
                 Document document = Jsoup.connect(link).get();
                 Elements elements = document.select("a");
 
                 parsedLinks.addAll(parseLinks(elements));
             }
 
-            visitedLinks.addAll(links);
-            visitedLinks.addAll(parsedLinks);
+            resultedLinks.addAll(currentLinks);
+            resultedLinks.addAll(parsedLinks);
 
-            return parse(parsedLinks, searchDeep - RECURSION_STEP, visitedLinks);
-        } catch (IOException e) {
+            return parse(parsedLinks, searchDeep - RECURSION_STEP, resultedLinks);
+        } catch (Exception e) {
             throw new URLRequestException("Incorrect URL request, or the connection time is out", e);
         }
     }

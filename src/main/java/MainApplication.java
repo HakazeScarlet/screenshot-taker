@@ -10,11 +10,11 @@ public class MainApplication {
 //        htmlParser.parse("https://github.com/");
 //        htmlParser.parse("https://cccstore.ru/");
 //        htmlParser.parse("https://airsoft-rus.ru/", 3);
-        htmlParser.parse(Set.of("https://airsoft-rus.ru/"), 3, new HashSet<>());
+//        htmlParser.parse(Set.of("https://airsoft-rus.ru/"), 3, new HashSet<>());
 
 //        Set<String> res = htmlParser.parse(Set.of("https://hakazescarlet.github.io/"), 3, new HashSet<>());
 //        Set<String> res = htmlParser.parse(Set.of("https://ollivere.co/"), 2, new HashSet<>());
-//        Set<String> res = htmlParser.parse(Set.of("https://rainymood.com/"), 3, new HashSet<>());
+        Set<String> res = htmlParser.parse(Set.of("https://rainymood.com/"), 3, new HashSet<>());
         System.out.println();
     }
 }
