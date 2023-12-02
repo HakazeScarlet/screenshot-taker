@@ -36,29 +36,33 @@ public class HtmlParser {
         }
     }
 
-    public Set<String> parse1(Set<String> links, int searchDeep, Set<String> visitedLinks) {
-        if (searchDeep == 0) {
-            return links;
-        }
+    // TODO: add logging and log the parsing process
+    public Set<String> parse(Set<String> links, int searchDeep, Set<String> visitedLinks) {
+        try {
+            if (searchDeep == 0) {
+                return visitedLinks;
+            }
 
-        for (String link : links) {
-            Document document = Jsoup.connect(link).get();
-            Elements elements = document.select("a");
+            Set<String> parsedLinks = new HashSet<>();
+            for (String link : links) {
+                Document document = Jsoup.connect(link).get();
+                Elements elements = document.select("a");
 
-            Set<String> parsedLinks = parseLinks(elements);
+                Set<String> tempVar = parseLinks(elements); // TODO: inline variable
+                parsedLinks.addAll(tempVar);
+            }
+
+            visitedLinks.addAll(links);
             visitedLinks.addAll(parsedLinks);
-            Set<String> result = parse1(parsedLinks, searchDeep - RECURSION_STEP, visitedLinks);
-        }
 
-//        try {
-//
-//            return parse(url, searchDeep - RECURSION_STEP);
-//
-//        } catch (IOException e) {
-//            throw new URLRequestException("Incorrect URL request, or the connection time is out", e);
-//        }
+            return parse(parsedLinks, searchDeep - RECURSION_STEP, visitedLinks);
+        } catch (Exception e) {
+            // TODO: throw custom exception
+            throw new RuntimeException();
+        }
     }
 
+    // TODO: rewrite using stream API
     private Set<String> parseLinks(Elements elements) {
         Set<String> links = new HashSet<>();
         for (Element element : elements) {
