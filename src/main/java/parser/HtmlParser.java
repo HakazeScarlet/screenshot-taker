@@ -48,17 +48,15 @@ public class HtmlParser {
                 Document document = Jsoup.connect(link).get();
                 Elements elements = document.select("a");
 
-                Set<String> tempVar = parseLinks(elements); // TODO: inline variable
-                parsedLinks.addAll(tempVar);
+                parsedLinks.addAll(parseLinks(elements));
             }
 
             visitedLinks.addAll(links);
             visitedLinks.addAll(parsedLinks);
 
             return parse(parsedLinks, searchDeep - RECURSION_STEP, visitedLinks);
-        } catch (Exception e) {
-            // TODO: throw custom exception
-            throw new RuntimeException();
+        } catch (IOException e) {
+            throw new URLRequestException("Incorrect URL request, or the connection time is out", e);
         }
     }
 
