@@ -9,12 +9,11 @@ public class MainApplication {
         HtmlParser htmlParser = new HtmlParser();
 //        htmlParser.parse("https://github.com/");
 //        htmlParser.parse("https://cccstore.ru/");
-//        htmlParser.parse("https://airsoft-rus.ru/", 3);
-//        htmlParser.parse(Set.of("https://airsoft-rus.ru/"), 3, new HashSet<>());
+//        htmlParser.parse(3, "https://airsoft-rus.ru/");
+//        htmlParser.parse(new HashSet<>(), 3, Set.of("https://airsoft-rus.ru/"));
 
-//        Set<String> res = htmlParser.parse(Set.of("https://hakazescarlet.github.io/"), 3, new HashSet<>());
-//        Set<String> res = htmlParser.parse(Set.of("https://ollivere.co/"), 2, new HashSet<>());
-        Set<String> res = htmlParser.parse(Set.of("https://rainymood.com/"), 3, new HashSet<>());
-        System.out.println();
+//        Set<String> res = htmlParser.parse(new HashSet<>(), 3, Set.of("https://hakazescarlet.github.io/"));
+//        Set<String> res = htmlParser.parse(new HashSet<>(), 2, Set.of("https://ollivere.co/"));
+        Set<String> res = htmlParser.parse(new HashSet<>(), 3, Set.of("https://rainymood.com/"));
     }
 }
