@@ -9,18 +9,26 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 // TODO: add threads
 public class HtmlParser {
 
     private static final Pattern QUERY_PARAMETER_PATTERN = Pattern.compile("\\?(.*)");
     private static final Pattern MEDIA_PATTERN = Pattern.compile("\\.(gif|mp4|mp3|js|jpeg|jpg|pdf|png|bmp|webp|svgz)$");
-//    private static final Pattern ISO_LANGUAGE = Pattern.compile(Set.of(Locale.getISOLanguages()).toString());
+    private static final Pattern LINK_ANCHOR = Pattern.compile("/#|/$|#$");
     private static final String LINK_TAG = "a";
     private static final String LINK_ATTRIBUTE = "abs:href";
     private static final int RECURSION_STEP = 1;
+    private static final Set<String> ISO_LANGUAGES = Set.of(Locale.getISOLanguages());
+    private static final Set<String> CODES = ISO_LANGUAGES.stream()
+        .map(code -> "(" + code + ")")
+        .collect(Collectors.toSet());
+    private static final String JOINED_ISO_LANGUAGES = "/(" + String.join("|", CODES) + ")/";
 
     private final UrlValidator urlValidator;
 
@@ -56,7 +64,7 @@ public class HtmlParser {
             return parse(parsedLinks, searchDeep - RECURSION_STEP, resultedLinks);
         } catch (Exception e) {
             // TODO: add logger for link & searchDeep
-            throw new URLRequestException("Incorrect URL request, or the connection time is out", e);
+            throw new URLRequestException("Incorrect URL request, or the lost connection", e);
         }
     }
 
@@ -65,11 +73,11 @@ public class HtmlParser {
         Set<String> links = new HashSet<>();
         for (Element element : elements) {
             String link = element.attr(LINK_ATTRIBUTE);
-            // TODO: get rid of links with internalization
-            if (hasValidProtocol(link) && !hasQueryParameters(link) && !isMedia(link)) {
-                // TODO: implement methods
-//            String str1 = deleteSharp(link);
-//            String str2 = deleteSlash(link);
+            if (hasValidProtocol(link) &&
+                !hasQueryParameters(link) &&
+                !hasLinkAnchor(link) &&
+                !isMedia(link) &&
+                !hasInternalizationStatic(link)) {
 
                 links.add(link);
                 System.out.println(links);
@@ -82,6 +90,10 @@ public class HtmlParser {
         return urlValidator.isValid(linkAttribute);
     }
 
+    private boolean hasLinkAnchor(String linkAttribute) {
+        return LINK_ANCHOR.matcher(linkAttribute).find();
+    }
+
     private boolean isMedia(String linkAttribute) {
         return MEDIA_PATTERN.matcher(linkAttribute).find();
     }
@@ -90,9 +102,11 @@ public class HtmlParser {
         return QUERY_PARAMETER_PATTERN.matcher(linkAttribute).find();
     }
 
-//    private boolean hasInternalization(String linkAttribute) {
-//        return ISO_LANGUAGE.matcher(linkAttribute).find();
-//    }
+    public static boolean hasInternalizationStatic(String link) {
+        Pattern pattern = Pattern.compile(JOINED_ISO_LANGUAGES);
+        Matcher matcher = pattern.matcher(link);
+        return matcher.find();
+    }
 
     private static final class URLRequestException extends RuntimeException {
 
