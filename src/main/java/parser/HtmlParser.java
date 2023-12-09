@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 // TODO: add threads
+// TODO: create test for this class
 public class HtmlParser {
 
     private static final Pattern QUERY_PARAMETER_PATTERN = Pattern.compile("\\?(.*)");
@@ -63,7 +64,6 @@ public class HtmlParser {
         }
     }
 
-    // TODO: rewrite using stream API
     private Set<String> parseLinks(Elements elements) {
         Set<String> links = new HashSet<>();
         for (Element element : elements) {
