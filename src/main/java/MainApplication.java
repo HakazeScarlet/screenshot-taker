@@ -1,5 +1,5 @@
 import parser.HtmlParser;
-import screenshot_maker.ScreenshotTaker;
+import screenshot_taker.ScreenshotTaker;
 
 import java.util.HashSet;
 import java.util.Set;
