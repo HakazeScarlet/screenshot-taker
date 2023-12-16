@@ -23,7 +23,6 @@ public class HtmlParser {
     private static final String LINK_TAG = "a";
     private static final String LINK_ATTRIBUTE = "abs:href";
     private static final int RECURSION_STEP = 1;
-    private static final int RECURSION_STOP = 0;
     private static final ch.qos.logback.classic.Logger logger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(HtmlParser.class);
 
     private final UrlValidator urlValidator;
@@ -33,9 +32,9 @@ public class HtmlParser {
         this.urlValidator = new UrlValidator();
     }
 
-    public Set<String> parse(Set<String> resultedLinks, int searchDeep, Set<String> currentLinks) {
+    public Set<String> parse(Set<String> currentLinks, int searchDeep, Set<String> resultedLinks) {
         try {
-            if (searchDeep == RECURSION_STOP) {
+            if (searchDeep == 0) {
                 return resultedLinks;
             }
 
@@ -59,7 +58,6 @@ public class HtmlParser {
             return parse(parsedLinks, searchDeep - RECURSION_STEP, resultedLinks);
         } catch (Exception e) {
             // TODO: add logger for link & searchDeep
-//            logger.info("Uncorrected link: {}. Deep of search is: {}", );
             throw new URLRequestException("Incorrect URL request, or the lost connection", e);
         }
     }
