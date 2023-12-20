@@ -15,6 +15,8 @@ public class MainApplication {
         Set<String> resultedLinks = new HtmlParser().parse(Set.of("https://rainymood.com/"), 1, new HashSet<>());
         List<File> screenshots = taker.take(resultedLinks);
 
+        System.out.println();
+
 //        AmazonS3Service amazonS3Service = new AmazonS3Service();
 //        amazonS3Service.save(screenshots);
 
