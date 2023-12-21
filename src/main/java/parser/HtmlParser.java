@@ -15,7 +15,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 // TODO: add threads
-// TODO: create test for this class
 public class HtmlParser {
 
     private static final Pattern QUERY_PARAMETER_PATTERN = Pattern.compile("\\?(.*)");
