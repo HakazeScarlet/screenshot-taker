@@ -1,24 +1,18 @@
-import parser.HtmlParser;
-import screenshot_taker.ScreenshotTaker;
-
-import java.io.File;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import storage.AmazonS3Service;
 
 public class MainApplication {
 
     public static void main(String[] args) {
 //        Set<String> resultedLinks = new HtmlParser().parse(Set.of("https://hakazescarlet.github.io/"), 3, new HashSet<>());
+//
+//        ScreenshotTaker taker = new ScreenshotTaker();
+//        Set<String> resultedLinks = new HtmlParser().parse(Set.of("https://rainymood.com/"), 1, new HashSet<>());
+//        List<File> screenshots = taker.take(resultedLinks);
 
-        ScreenshotTaker taker = new ScreenshotTaker();
-        Set<String> resultedLinks = new HtmlParser().parse(Set.of("https://rainymood.com/"), 1, new HashSet<>());
-        List<File> screenshots = taker.take(resultedLinks);
-
-        System.out.println();
-
-//        AmazonS3Service amazonS3Service = new AmazonS3Service();
+        AmazonS3Service amazonS3Service = new AmazonS3Service();
 //        amazonS3Service.save(screenshots);
+        amazonS3Service.deleteAll();
+//        amazonS3Service.getListObject();
 
 //        htmlParser.parse(Set.of("https://cccstore.ru/"), 3, new HashSet<>());
 //        Set<String> resultedLinks = new HtmlParser().parse(Set.of("https://github.com/"), 2, new HashSet<>());
